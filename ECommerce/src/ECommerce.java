@@ -2,6 +2,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import Dados.Categoria;
 import Dados.Cliente;
@@ -18,6 +20,8 @@ public class ECommerce implements Serializable{
 	private Map<String,Produto> produtos;
 	private static String nomeProduto;
 	private static String eMail;
+	private Map<Integer,String> listaBusca;
+	
 	
 	public ECommerce(String nome) {
 		
@@ -26,8 +30,7 @@ public class ECommerce implements Serializable{
 		this.clientes = new HashMap<String,Cliente>();
 		this.vendedores = new HashMap<String,Vendedor>();
 		this.produtos = new HashMap<String,Produto>();
-		
-		
+		this.listaBusca = new HashMap<Integer,String>();		
 	}
 	
 	public void adicionaCategoria(String nome) {
@@ -160,6 +163,11 @@ public class ECommerce implements Serializable{
 		ECommerce.nomeProduto = categorias.get(--nunCat).getProduto(--nunProd);
 		return this.produtos.get(nomeProduto).exibeProduto();
 	}
+	
+	public String exibeProduto(int menu) {
+		ECommerce.nomeProduto = this.listaBusca.get(menu);
+		return this.produtos.get(nomeProduto).exibeProduto();
+	}
 
 	public String meusAnuncios() {
 		String txt = "Meus Anúncios\n\n";
@@ -243,8 +251,45 @@ public class ECommerce implements Serializable{
 		ECommerce.eMail = eMail;
 	}
 
-	
+	public String getBuscaProduto(String busca) {
+		// TODO Auto-generated method stub
+		int i = 1;
+		String txt ="";
+		Set<String> lista = this.produtos.keySet();
+		System.out.println(this.produtos.keySet());
+		
+		for (String l: lista) {
+			if ( taxaDistancia(busca, l) > 0.5) { 
+				this.listaBusca.put(i, l);
+				txt += String.format("%d. %s\n", i, l);
+				i++;
+			}
+			if (i == 1) return "Nenhum produto encontrado.";
+		}
+		return txt;
+	}
 
+	
+	public static double taxaDistancia (String busca, String existente) {
+		busca = busca.toLowerCase();
+        existente = existente.toLowerCase();
+        // i == 0
+        int [] costs = new int [existente.length() + 1];
+        for (int j = 0; j < costs.length; j++)
+            costs[j] = j;
+        for (int i = 1; i <= busca.length(); i++) {
+            // j == 0; nw = lev(i - 1, j)
+            costs[0] = i;
+            int nw = i - 1;
+            for (int j = 1; j <= existente.length(); j++) {
+                int cj = Math.min(1 + Math.min(costs[j], costs[j - 1]), busca.charAt(i - 1) == existente.charAt(j - 1) ? nw : nw + 1);
+                nw = costs[j];
+                costs[j] = cj;
+            }
+        }
+//        return costs[existente.length()];
+        return (double) (existente.length() - costs[existente.length()]) / busca.length();
+    }
 	
 
 	

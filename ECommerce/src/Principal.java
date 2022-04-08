@@ -115,6 +115,7 @@ public class Principal {
 									
 									case 0:	System.out.println(comercio.listarCategorias());
 											System.out.println("\nDigite o numero da categoria ou:"
+															 + "\n 66. buscar um produto pelo nome"
 															 + "\n 77. Meu carrinho"
 															 + "\n 88. Meus pedidos"															
 															 + "\n 99. Sair");
@@ -163,6 +164,27 @@ public class Principal {
 											comercio.addNoCarrinho(nunCat, nunProd, qtdProduto);
 											exportaDados();
 											menu = 77;											
+										break;
+									
+									case 66 : System.out.println("\nDigite o nome do produto");
+											  String busca = entrada.nextLine();
+											  System.out.println(comercio.getBuscaProduto(busca));
+											  menu = Integer.parseInt(entrada.nextLine());
+											  System.out.println("Produto\n");
+											  System.out.println("Produto\n" + comercio.exibeProduto(menu));
+											  System.out.println("\nDgite a opção:"
+																+ "\n 66: Adicionar ao carrinho"
+																+ "\n 77. Meu carrinho"
+																+ "\n 88. Meus pedidos"	
+																+ "\n 99: Voltar");
+												menu = Integer.parseInt(entrada.nextLine());
+												if (menu == 66) {
+													menu = 2; 
+												}else {
+													menu = 0;}	
+											  
+											  
+									
 										break;
 										
 									case 77 : System.out.println(comercio.getCarrinho());   		// Meu carrinho
